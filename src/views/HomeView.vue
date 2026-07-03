@@ -23,7 +23,7 @@ function adduser(userValue) {
 <template>
   <div class="login-card">
     <label for="username">enter your name</label>
-    <input id="username" type="text" v-model="name" placeholder="John Doe">
+    <input id="username" type="text" v-model="name" placeholder="John Doe" required>
 
     <label>select your role</label>
     <div class="button-group">
