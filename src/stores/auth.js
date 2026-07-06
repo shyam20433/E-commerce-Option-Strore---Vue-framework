@@ -21,7 +21,8 @@ export const useAuthStore = defineStore("auth", {
       localStorage.setItem("currentUser", JSON.stringify(this.currentUser))
 
       localStorage.setItem("isLoggedIn", JSON.stringify(this.isLoggedIn))
-
+      const cart=carts()
+      cart.loadcart()
 
     },
     loginadmin(admin) {
@@ -33,13 +34,13 @@ export const useAuthStore = defineStore("auth", {
     },
 
     logout() {
-      const cart = carts()
+      //const cart = carts()
       this.currentUser = null;
       this.isLoggedIn = false;
       //alert(`${this.currentUser} is logged out`)
       localStorage.setItem("currentUser", JSON.stringify(this.currentUser))
       localStorage.setItem("isLoggedIn", JSON.stringify(this.isLoggedIn))
-      cart.clearcart()
+      //cart.clearcart()
 
 
     }

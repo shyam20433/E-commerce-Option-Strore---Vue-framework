@@ -45,6 +45,7 @@ async function placeOrder() {
     return
   }
   const order = {
+    userId:auth.currentUser.id,
     user:auth.currentUser,
     items: cart.cartItems,
     totalItems: cart.totalitems,

@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
+import { useAuthStore } from "./auth";
 
 export const carts = defineStore('cart', {
   state: () => ({
-    cartItems: JSON.parse(localStorage.getItem("cart"))||[]
+    cartItems:[]
   }),
   getters: {
 
@@ -18,6 +19,30 @@ export const carts = defineStore('cart', {
     }
   },
   actions: {
+    getcartkey(){
+      const auth=useAuthStore();
+      if(!auth.currentUser){
+        return null;
+      }
+      return `cart_${auth.currentUser.id}`;
+    },
+    loadcart(){
+      const key=this.getcartkey();
+      if(!key){
+        this.cartItems=[];
+        return;
+      }
+      this.cartItems=JSON.parse(localStorage.getItem(key))||[];
+    },
+    savecart(){
+      const key=this.getcartkey()
+      if(key){
+        localStorage.setItem(key,JSON.stringify(this.cartItems))
+      }
+    },
+
+
+
     addtocart(products) {
 
       const exits=this.cartItems.find(
@@ -31,16 +56,20 @@ export const carts = defineStore('cart', {
       this.cartItems.push({...products,quantity:1})
       localStorage.setItem("cart",JSON.stringify(this.cartItems))
       alert(`${products.name} added`)
-    }},
+    }
+  this.savecart()},
 
     delcart(index){
       this.cartItems.splice(index,1)
       localStorage.setItem("cart",JSON.stringify(this.cartItems))
       alert(`product removed from the cart`)
+      this.savecart()
     },
     clearcart(){
+      const key=this.getcartkey()
       this.cartItems=[]
-      localStorage.removeItem("cart")
+      if(key){
+      localStorage.removeItem(key)}
     },
     increasequantity(id){
       const exits=this.cartItems.find(
@@ -50,6 +79,7 @@ export const carts = defineStore('cart', {
         exits.quantity++;
       }
       localStorage.setItem("carts",JSON.stringify(this.cartItems))
+      this.savecart()
 
     },
     decreasequantity(id){
@@ -64,6 +94,10 @@ export const carts = defineStore('cart', {
           this.cartItems.splice(id.index,1)
         }
       }
+      this.savecart()
+    },
+    resetcart(){
+      this.cartItems=[];
     }
   }
 })
