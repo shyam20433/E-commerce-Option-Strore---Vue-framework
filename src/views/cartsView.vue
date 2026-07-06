@@ -120,7 +120,7 @@ async function placeOrder() {
       </div>
       <h3>total amount : ₹ {{ cart.totalprice }}</h3>
       <h3>total quantity : {{ cart.totalitems }}</h3>
-      <button @click="placeOrder">Place Order</button>
+      <button @click="placeOrder" v-if="cart.cartItems.length>=1">Place Order</button>
     </div>
   </div>
 </template>

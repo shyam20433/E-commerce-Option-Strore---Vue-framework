@@ -3,9 +3,14 @@ import { useAuthStore } from "./auth";
 
 
 export const carts = defineStore('cart', {
-  state: () => ({
-    cartItems:[]
-  }),
+  state: () => {
+    const currentUser=JSON.parse(localStorage.getItem("currentUser"))
+    const key=currentUser  ? `cart_${currentUser.id}` :null;
+    return {
+      cartItems:key ? JSON.parse(localStorage.getItem(key))||[]
+      :[]
+    }
+  },
   getters: {
 
     totalprice:(state)=>{
@@ -59,15 +64,19 @@ export const carts = defineStore('cart', {
       }
       else{
       this.cartItems.push({...products,quantity:1})
-      localStorage.setItem("cart",JSON.stringify(this.cartItems))
       alert(`${products.name} added`)
     }
+      const key=this.getcartkey()
+      localStorage.setItem(key,JSON.stringify(this.cartItems))
+
+
   //this.savecart()
 },
 
     delcart(index){
       this.cartItems.splice(index,1)
-      localStorage.setItem("cart",JSON.stringify(this.cartItems))
+      const key=this.getcartkey()
+      localStorage.setItem(key,JSON.stringify(this.cartItems))
       alert(`product removed from the cart`)
       //this.savecart()
     },
@@ -84,21 +93,23 @@ export const carts = defineStore('cart', {
       if (exits){
         exits.quantity++;
       }
-      localStorage.setItem("carts",JSON.stringify(this.cartItems))
+      const key=this.getcartkey()
+      localStorage.setItem(key,JSON.stringify(this.cartItems))
       //this.savecart()
 
     },
     decreasequantity(id){
-      const exits=this.cartItems.find(
+      const index=this.cartItems.findIndex(
         item=>item.id==id
       )
-      if (exits){
-        if (exits.quantity >0){
-          exits.quantity--
+      if (index!==-1){
+        this.cartItems[index].quantity--
+
+        if(this.cartItems[index].quantity===0){
+          this.cartItems.splice(index,1)
         }
-        if (exits.quantity==0){
-          this.cartItems.splice(id.index,1)
-        }
+        const key=this.getcartkey()
+        localStorage.setItem(key,JSON.stringify(this.cartItems))
       }
       //this.savecart()
     },

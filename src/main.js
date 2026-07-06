@@ -19,6 +19,7 @@ cart.$subscribe((mutation,state)=>{
   const key=cart.getcartkey()
   if (key){
     localStorage.setItem(key,JSON.stringify(state.cartItems))
+    console.log(`triggered subscribe !!`)
   }
 })
 
