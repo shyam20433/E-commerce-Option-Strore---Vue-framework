@@ -1,13 +1,12 @@
 <script setup>
 import apicall from '@/services/server'
 //import router from '@/router';
-import { ref, computed,watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { onMounted } from 'vue'
 import { carts } from '@/stores/carts'
 import { useAuthStore } from '@/stores/auth'
 import apiAdminControlBtn from '@/components/apiAdminControlBtn.vue'
 import { useToast } from 'vue-toastification'
-
 
 const toast = useToast()
 
@@ -27,17 +26,38 @@ const image = ref('')
 const sortby = ref('default')
 const search = ref('')
 let timer
+const loading = ref(false)
 
+import SearchBar from '@/components/searchBarBtn.vue'
 
-watch(search,(newvalue)=>{
+async function searchProduct(keyword) {
+  if (keyword.trim() === '') {
+    await get()
+  } else {
+    products.value = await apicall.searchProducts(keyword)
+  }
+}
+/* function debounceSearch(event){
+
+  const keyword=event.target.value
+  console.log(keyword)
   clearTimeout(timer)
-  timer=setTimeout(async()=>{
-    if(newvalue.trim()===""){
+  timer=setTimeout(async() => {
+
+    products.value=await apicall.searchProducts(keyword)
+  }, 1000);
+}
+ */
+watch(search, (newvalue) => {
+  console.log(newvalue)
+  clearTimeout(timer)
+  timer = setTimeout(async () => {
+    if (newvalue.trim() === '') {
       get()
-    }else{
-      products.value=await apicall.searchProducts(newvalue)
+    } else {
+      products.value = await apicall.searchProducts(newvalue)
     }
-  },1000)
+  }, 1000)
 })
 
 async function addproduct() {
@@ -80,7 +100,15 @@ async function deleteProduct(id) {
 }
 
 async function get() {
-  products.value = await apicall.getproducts()
+  loading.value = true
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    products.value = await apicall.getproducts()
+  } catch (error) {
+    console.log(error)
+  } finally {
+    loading.value = false
+  }
 }
 
 const sortedproducts = computed(() => {
@@ -116,12 +144,13 @@ function addtocart(prod) {
   }
 }
 
-const sortOptions = [{ title: 'default', value: 'default' },{ title: 'low to high', value: 'low' },{ title: 'high to low', value: 'high' }]
-
-
+const sortOptions = [
+  { title: 'default', value: 'default' },
+  { title: 'low to high', value: 'low' },
+  { title: 'high to low', value: 'high' },
+]
 </script>
 <template>
-
   <v-container>
     <h1 class="text-h4 text-center mb-6">Product Management</h1>
 
@@ -146,6 +175,9 @@ const sortOptions = [{ title: 'default', value: 'default' },{ title: 'low to hig
             variant="outlined"
             clearable
           />
+          <v-col cols="12" sm="6" md="3">
+            <SearchBar @search="searchProduct" />
+          </v-col>
         </v-col>
         <v-col cols="12" sm="6" md="3">
           <v-select
@@ -185,6 +217,8 @@ const sortOptions = [{ title: 'default', value: 'default' },{ title: 'low to hig
 
       <div class="d-flex justify-center flex-wrap ga-3 mt-6">
         <v-btn v-if="auth.isAdmin" color="success" variant="flat" @click="addproduct"> Add </v-btn>
+
+        <!-- <v-btn v-if="auth.isAdmin" color="success" variant="flat" @click="get"> get </v-btn> -->
 
         <v-btn color="primary" variant="flat" @click="fetchid"> Get </v-btn>
 
@@ -231,9 +265,13 @@ const sortOptions = [{ title: 'default', value: 'default' },{ title: 'low to hig
       </v-card-text>
     </v-card>
 
+    <div v-if="loading" class="d-flex justify-center my-10">
+      <v-progress-circular indeterminate size="60" width="6" /><!-- :model-value="progress" -->
+    </div>
+
     <!-- //product list -->
 
-    <v-row>
+    <v-row v-else>
       <v-col v-for="prod in sortedproducts" :key="prod.id" cols="12" sm="6" md="4" lg="3">
         <v-card elevation="4" height="100%" class="d-flex flex-column">
           <!-- IMAGE -->
