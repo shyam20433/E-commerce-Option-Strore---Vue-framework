@@ -103,7 +103,7 @@ async function deleteProduct(id) {
 async function get() {
   loading.value = true
   try {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 500))
     products.value = await apicall.getproducts()
   } catch (error) {
     console.log(error)
@@ -150,7 +150,7 @@ function addtocart(prod) {
 
     setTimeout(()=>{
       throttledProducts.delete(prod.id)
-    },4000)}
+    },700)}
   }
 }
 
