@@ -49,7 +49,7 @@ onMounted(() => {
       </v-card-title>
 
       <v-card-subtitle class="pb-4">
-        {{ order.orderDate }}
+        {{ order.order_date }}
       </v-card-subtitle>
 
       <v-divider />
@@ -107,14 +107,14 @@ onMounted(() => {
           <span> Total Items </span>
 
           <strong>
-            {{ order.totalItems }}
+            {{ order.total_items }}
           </strong>
         </div>
 
         <div class="d-flex justify-space-between">
           <span class="text-h6 font-weight-bold"> Order Total </span>
 
-          <span class="text-h6 text-primary font-weight-bold"> ₹{{ order.totalPrice }} </span>
+          <span class="text-h6 text-primary font-weight-bold"> ₹{{ order.total_price }} </span>
         </div>
       </v-card-text>
     </v-card>

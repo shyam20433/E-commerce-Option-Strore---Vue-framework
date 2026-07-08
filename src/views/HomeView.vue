@@ -54,12 +54,10 @@ async function addadmin() {
     return
   }
 
-  const users = await apicall.getUserByName(name.value)
+  const user = await apicall.getUserByName(name.value)
 
-  const exists = users.find((user) => user.role === 'admin')
-
-  if (exists) {
-    auth.login(exists)
+  if(user && user.role==='admin'){
+ auth.login(user)
 
     toast.success('Admin Logged In')
   } else {

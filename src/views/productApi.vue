@@ -2,7 +2,7 @@
 import apicall from '@/services/server'
 //import router from '@/router';
 import { ref, computed, watch } from 'vue'
-
+import productCard from '@/components/productCard.vue'
 import { onMounted } from 'vue'
 import { carts } from '@/stores/carts'
 import { useAuthStore } from '@/stores/auth'
@@ -283,7 +283,7 @@ const sortOptions = [
     </div>
 
 
-    <v-row v-else>
+ <v-row v-else>
   <v-col
     v-for="prod in sortedproducts"
     :key="prod.id"
@@ -292,10 +292,7 @@ const sortOptions = [
     md="4"
     lg="3"
   >
-
-    <ProductCard :prod="prod">
-
-
+    <productCard :prod="prod">
 
       <v-card-actions
         v-if="auth.isLoggedIn && !auth.isAdmin"
@@ -310,18 +307,14 @@ const sortOptions = [
         </v-btn>
       </v-card-actions>
 
-      <div
-        v-if="auth.isAdmin"
-        class="pa-3"
-      >
+      <v-card-actions v-if="auth.isAdmin">
         <apiAdminControlBtn
           @edit="editProduct(prod)"
           @delete="deleteProduct(prod.id)"
         />
-      </div>
+      </v-card-actions>
 
-    </ProductCard>
-
+    </productCard>
   </v-col>
 </v-row>
   </v-container>

@@ -12,21 +12,19 @@ const sortby = ref('default')
 import { useToast } from 'vue-toastification'
 
 const toast = useToast()
-let timer=null
+let timer = null
 
-function debounceSearch(event){
-  const keyword=event.target.value
+function debounceSearch(event) {
+  const keyword = event.target.value
   console.log(keyword)
   clearTimeout(timer)
-  timer=setTimeout(() => {
+  timer = setTimeout(() => {
     //console.log(keyword,'1')
-    search.value=keyword
+    search.value = keyword
   }, 4000);
 }
 
-function del(index) {
-  cart.delcart(index)
-}
+
 function back() {
   router.push('/productapi')
 }
@@ -49,11 +47,30 @@ const filteredProducts = computed(() => {
 
 import apicall from '@/services/server'
 
-async function placeOrder() {
+
+
+
+
+
+
+
+
+const orderConfirmModal = ref(false)
+
+function askOrder() {
   if (cart.cartItems.length === 0) {
-    toast.success(`cart is empty cant place order !`)
+    toast.warning('Cart is empty, cannot place order!')
     return
   }
+
+  orderConfirmModal.value = true
+}
+
+function cancelOrder() {
+  orderConfirmModal.value = false
+}
+
+async function confirmOrder() {
   const order = {
     userId: auth.currentUser.id,
     user: auth.currentUser,
@@ -63,14 +80,40 @@ async function placeOrder() {
     orderDate: new Date().toLocaleString(),
   }
 
-  await apicall.placeOrder(order)
+  try {
+    await apicall.placeOrder(order)
 
-  toast.success('Order Placed Successfully')
+    orderConfirmModal.value = false
 
-  cart.clearcart()
+    cart.clearcart()
+
+    toast.success('Order placed successfully!')
+  } catch (error) {
+    console.error(error)
+    toast.error('Failed to place order')
+  }
 }
 
 
+
+
+const deleteModal = ref(false)
+const productDelete = ref(null)
+
+
+function askDelete(id) {
+  productDelete.value = id
+  deleteModal.value = true
+}
+function confirmDelete() {
+  cart.delcart(productDelete.value)
+  deleteModal.value = false
+  productDelete.value = null
+}
+function cancelDelete() {
+  deleteModal.value = false
+  productDelete.value = null
+}
 
 
 </script>
@@ -129,14 +172,42 @@ async function placeOrder() {
           </tr>
           <tr>
             <td colspan="2" class="action-cell">
-              <removeCrtBtn @delete="del(prod.id)" />
+              <removeCrtBtn @delete="askDelete(prod.id)" />
+
+
+
+
+              <v-dialog v-model="deleteModal" max-width="450">
+                <v-card rounded="xl">
+                  <v-card-title>remove Product</v-card-title>
+                  <v-card-text>are you sure Do you want to remove the product</v-card-text>
+                  <v-card-actions class="justify-center">
+                    <v-btn color="red" variant="outlined" @click="cancelDelete">No</v-btn>
+                    <v-btn color="green" variant="outlined" @click="confirmDelete">yes</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </td>
           </tr>
         </table>
       </div>
       <h3>total amount : ₹ {{ cart.totalprice }}</h3>
       <h3>total quantity : {{ cart.totalitems }}</h3>
-      <button @click="placeOrder" v-if="cart.cartItems.length >= 1">Place Order</button>
+      <button @click="askOrder" v-if="cart.cartItems.length >= 1">
+        Place Order
+      </button>
+
+
+      <v-dialog v-model="orderConfirmModal" max-width="450">
+        <v-card rounded="xl">
+          <v-card-title class="text-center"> Order place</v-card-title>
+          <v-card-text class="text-center">Do you want to place order</v-card-text>
+          <v-card-actions>
+            <v-btn color="green" variant="flat" @click="confirmOrder">Yes</v-btn>
+            <v-btn color="red" variant="flat" @click="cancelOrder">No</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </div>
 </template>

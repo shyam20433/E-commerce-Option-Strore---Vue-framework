@@ -60,11 +60,11 @@ async function deleteOrder(id) {
       </div>
 
       <div class="summary">
-        <p><strong>Total Items :</strong> {{ order.totalItems }}</p>
+        <p><strong>Total Items :</strong> {{ order.total_items }}</p>
 
-        <p><strong>Total Price :</strong> ₹{{ order.totalPrice }}</p>
+        <p><strong>Total Price :</strong> ₹{{ order.total_price }}</p>
 
-        <p><strong>Order Date :</strong> {{ order.orderDate }}</p>
+        <p><strong>Order Date :</strong> {{ order.order_date }}</p>
       </div>
     </div>
   </div>
