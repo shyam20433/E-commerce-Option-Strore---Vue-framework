@@ -30,24 +30,21 @@ async function adduser() {
     return
   }
 
-  const users = await apicall.getUserByName(name.value)
+  const existingUser = await apicall.getUserByName(
+    name.value.trim()
+  )
 
-  const exists = users[0]
-
-  if (exists) {
-    auth.login(exists)
+  if (existingUser) {
+    auth.login(existingUser)
 
     toast.success('Logged in successfully')
   } else {
     const newUser = {
-      username: name.value,
+      username: name.value.trim(),
       role: 'user',
     }
-
-    await apicall.adduser(newUser)
-
-    auth.login(newUser)
-
+    const createdUser = await apicall.adduser(newUser)
+    auth.login(createdUser)
     toast.success('Signup Successfully')
   }
 }

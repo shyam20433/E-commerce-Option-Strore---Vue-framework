@@ -2,6 +2,7 @@
 import apicall from '@/services/server'
 //import router from '@/router';
 import { ref, computed, watch } from 'vue'
+
 import { onMounted } from 'vue'
 import { carts } from '@/stores/carts'
 import { useAuthStore } from '@/stores/auth'
@@ -135,12 +136,21 @@ async function delproduct() {
   toast.success(`deleted !!`)
   get()
 }
-
+const throttledProducts=new Set()
 function addtocart(prod) {
   if (!auth.isLoggedIn) {
     toast.warning(`login to add carts !!`)
+    return
   } else {
+    if(throttledProducts.has(prod.id)){
+      return
+    }else{
     cart.addtocart(prod)
+    throttledProducts.add(prod.id)
+
+    setTimeout(()=>{
+      throttledProducts.delete(prod.id)
+    },4000)}
   }
 }
 
@@ -272,51 +282,48 @@ const sortOptions = [
       <v-progress-circular indeterminate size="60" width="6" /><!-- :model-value="progress" -->
     </div>
 
-    <!-- //product list -->
 
     <v-row v-else>
-      <v-col v-for="prod in sortedproducts" :key="prod.id" cols="12" sm="6" md="4" lg="3">
-        <v-card elevation="4" height="100%" class="d-flex flex-column">
-          <!-- IMAGE -->
+  <v-col
+    v-for="prod in sortedproducts"
+    :key="prod.id"
+    cols="12"
+    sm="6"
+    md="4"
+    lg="3"
+  >
 
-          <v-img :src="prod.image" :alt="prod.name" height="200" cover />
+    <ProductCard :prod="prod">
 
-          <!-- NAME -->
 
-          <v-card-title>
-            {{ prod.name }}
-          </v-card-title>
 
-          <!-- PRODUCT DETAILS -->
+      <v-card-actions
+        v-if="auth.isLoggedIn && !auth.isAdmin"
+      >
+        <v-btn
+          color="primary"
+          variant="flat"
+          block
+          @click="addtocart(prod)"
+        >
+          Add To Cart
+        </v-btn>
+      </v-card-actions>
 
-          <v-card-text>
-            <p class="mb-2">
-              <strong>ID:</strong>
+      <div
+        v-if="auth.isAdmin"
+        class="pa-3"
+      >
+        <apiAdminControlBtn
+          @edit="editProduct(prod)"
+          @delete="deleteProduct(prod.id)"
+        />
+      </div>
 
-              {{ prod.id }}
-            </p>
+    </ProductCard>
 
-            <p class="text-h6">
-              <strong>₹{{ prod.price }}</strong>
-            </p>
-          </v-card-text>
-
-          <v-spacer />
-
-          <!-- USER CART BUTTON -->
-
-          <v-card-actions v-if="auth.isLoggedIn && !auth.isAdmin">
-            <v-btn color="primary" variant="flat" block @click="addtocart(prod)">
-              Add To Cart
-            </v-btn>
-          </v-card-actions>
-
-          <div v-if="auth.isAdmin" class="pa-3">
-            <apiAdminControlBtn @edit="editProduct(prod)" @delete="deleteProduct(prod.id)" />
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
+  </v-col>
+</v-row>
   </v-container>
 </template>
 <!--

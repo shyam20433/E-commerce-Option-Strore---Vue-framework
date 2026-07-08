@@ -42,7 +42,8 @@ export const carts = defineStore('cart', {
         this.cartItems = [];
         return;
       }
-      this.cartItems = JSON.parse(localStorage.getItem(key)) || [];
+      const savedcarts=localStorage.getItem(key)
+      this.cartItems = savedcarts?JSON.parse(savedcarts): [];
     },
     /* savecart(){
       const key=this.getcartkey()
