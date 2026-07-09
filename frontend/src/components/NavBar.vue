@@ -1,255 +1,305 @@
 <script setup>
-import { useAuthStore } from "@/stores/auth";
-import router from "@/router";
-const auth = useAuthStore();
+import { useAuthStore } from '@/stores/auth'
+import router from '@/router'
 
+const auth = useAuthStore()
 
 function logout() {
   auth.logout()
+
   localStorage.removeItem('adminToken')
   localStorage.removeItem('currentUser')
 
-  router.push('/productapi')
+  router.push('/')
 }
 </script>
 
 <template>
-  <nav class="navbar">
+  <!-- ADMIN NAVBAR -->
+  <nav v-if="auth.isAdmin" class="navbar admin-navbar">
+    <div class="brand">
+      <span class="brand-icon">◆</span>
+
+      <div>
+        <h2>E-Shop Admin</h2>
+        <small>Admin Dashboard</small>
+      </div>
+    </div>
+
     <ul class="nav-links">
       <li>
-        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/productapi">
+          Products
+        </RouterLink>
       </li>
 
-      <!-- <li>
-        <RouterLink to="/products" v-if=" auth.isLoggedIn && !auth.isAdmin">Products</RouterLink>
-      </li> -->
-<li>
-        <RouterLink to="/productapi" >Product Api</RouterLink>
-      </li>
       <li>
-        <RouterLink to="/carts" v-if=" auth.isLoggedIn && !auth.isAdmin">Cart</RouterLink>
+        <RouterLink to="/manage">
+          Manage Products
+        </RouterLink>
       </li>
+
       <li>
-        <RouterLink to="/myorders" v-if=" auth.isLoggedIn && !auth.isAdmin">MyOrders</RouterLink>
-      </li>
-
-
-
-      <li v-if="auth.isAdmin">
-        <RouterLink to="/manage">Manage</RouterLink>
-      </li>
-      <li v-if="auth.isAdmin">
-        <RouterLink to="/orders">Orders</RouterLink>
+        <RouterLink to="/orders">
+          Orders
+        </RouterLink>
       </li>
     </ul>
 
-    <div class="auth">
-      <RouterLink to="/" v-if="!auth.isLoggedIn">
-        Login
-      </RouterLink>
+    <div class="user-menu">
+      <div class="welcome">
+        <small>Administrator</small>
+        <span>{{ auth.currentUser?.username }}</span>
+      </div>
 
-      <div v-else class="user-menu">
-        <span>Welcome {{ auth.currentUser.username }}</span>
+      <button class="logout-btn" @click="logout">
+        Logout
+      </button>
+    </div>
+  </nav>
 
-        <button @click="logout">
-  Logout
-</button>
+
+  <!-- USER NAVBAR -->
+  <nav
+    v-else-if="auth.isLoggedIn"
+    class="navbar user-navbar"
+  >
+    <div class="brand">
+      <span class="brand-icon">◆</span>
+
+      <div>
+        <h2>E-Shop</h2>
+        <small>Online Store</small>
       </div>
     </div>
+
+    <ul class="nav-links">
+      <li>
+        <RouterLink to="/productapi">
+          Products
+        </RouterLink>
+      </li>
+
+      <li>
+        <RouterLink to="/carts">
+          Cart
+        </RouterLink>
+      </li>
+
+      <li>
+        <RouterLink to="/myorders">
+          My Orders
+        </RouterLink>
+      </li>
+    </ul>
+
+    <div class="user-menu">
+      <div class="welcome">
+        <small>Welcome back</small>
+        <span>{{ auth.currentUser?.username }}</span>
+      </div>
+
+      <button class="logout-btn" @click="logout">
+        Logout
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- GUEST NAVBAR -->
+  <nav v-else class="navbar guest-navbar">
+    <div class="brand">
+      <span class="brand-icon">◆</span>
+
+      <div>
+        <h2>E-Shop</h2>
+        <small>Online Store</small>
+      </div>
+    </div>
+
+    <ul class="nav-links">
+      <li>
+        <RouterLink to="/productapi">
+          Products
+        </RouterLink>
+      </li>
+    </ul>
+
+    <RouterLink class="login-btn" to="/">
+      Login
+    </RouterLink>
   </nav>
 </template>
 
 <style scoped>
-/* ============================================
-   NAVBAR - Clean, Themed, Fully Responsive
-   ============================================ */
-
-/* ----- Base Navbar ----- */
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px 24px;
+  min-height: 72px;
+  padding: 0 40px;
 
-  /* Matches your store layout theme */
-  background-color: #ffffff;
-  padding: 16px 48px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
   position: sticky;
   top: 0;
   z-index: 1000;
+
+  font-family: system-ui, sans-serif;
+}
+
+.user-navbar,
+.guest-navbar {
+  background: #ffffff;
   border-bottom: 1px solid #e2e8f0;
-  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
 }
 
-/* ----- Navigation Links Container ----- */
-.nav-links {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px 32px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.admin-navbar {
+  background: #111827;
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-/* ----- Each Nav Item ----- */
-.nav-links li {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-/* ----- Nav Links (RouterLink) ----- */
-.nav-links a {
-  text-decoration: none;
-  color: #64748b; /* Slate Gray */
-  font-size: 15px;
-  font-weight: 600;
-  padding: 6px 4px;
-  transition: color 0.2s ease, transform 0.2s ease;
-  position: relative;
-}
-
-/* --- Underline Hover Effect --- */
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0%;
-  height: 2.5px;
-  background: #3b82f6; /* Blue Accent */
-  border-radius: 4px;
-  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.nav-links a:hover {
-  color: #1e293b;
-}
-
-.nav-links a:hover::after {
-  width: 100%;
-}
-
-/* --- Active Link State --- */
-.nav-links a.router-link-active {
-  color: #3b82f6;
-}
-
-.nav-links a.router-link-active::after {
-  width: 100%;
-}
-
-/* ----- Auth Section (Right Side) ----- */
-.auth {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px 20px;
-}
-
-.user-menu {
+.brand {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-/* ----- Auth Links (Login) ----- */
-.auth a {
-  text-decoration: none;
-  color: #3b82f6;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 8px 16px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-}
+.brand-icon {
+  width: 38px;
+  height: 38px;
 
-.auth a:hover {
-  background-color: #f8fafc;
-  border-color: #3b82f6;
-}
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-/* ----- Welcome Text ----- */
-.auth span {
-  color: #4a5568;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 6px 12px;
-  background-color: #f1f5f9;
-  border-radius: 20px;
-}
-
-/* ----- Logout Button ----- */
-.auth button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  background-color: #ef4444; /* Matches red from admin buttons */
+  background: #2563eb;
   color: white;
-  font-weight: 600;
+
+  border-radius: 10px;
+}
+
+.brand h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.brand small {
+  opacity: 0.65;
+  font-size: 11px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-links a {
+  padding: 9px 15px;
+
+  text-decoration: none;
+  color: #64748b;
+
+  border-radius: 7px;
+
   font-size: 14px;
+  font-weight: 600;
+
+  transition: 0.2s;
+}
+
+.admin-navbar .nav-links a {
+  color: #cbd5e1;
+}
+
+.nav-links a:hover {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.admin-navbar .nav-links a:hover {
+  background: #1f2937;
+  color: white;
+}
+
+.nav-links a.router-link-active {
+  background: #2563eb;
+  color: white;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.welcome small {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.welcome span {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.logout-btn {
+  padding: 9px 16px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #ef4444;
+  color: white;
+
+  font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
 }
 
-.auth button:hover {
-  opacity: 0.9;
+.logout-btn:hover {
+  background: #dc2626;
 }
 
-.auth button:active {
-  transform: scale(0.97);
+.login-btn {
+  padding: 10px 22px;
+
+  background: #2563eb;
+  color: white;
+
+  border-radius: 7px;
+
+  text-decoration: none;
+  font-weight: 600;
 }
 
-/* ============================================
-   RESPONSIVE LAYOUTS
-   ============================================ */
-
-@media (max-width: 820px) {
+@media (max-width: 750px) {
   .navbar {
-    padding: 14px 28px;
-    gap: 12px 16px;
-  }
-  .nav-links {
-    gap: 6px 20px;
-  }
-}
-
-@media (max-width: 600px) {
-  .navbar {
+    padding: 15px 20px;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 14px 20px;
-    gap: 16px;
+    gap: 15px;
   }
 
   .nav-links {
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 6px 18px;
-  }
-
-  .auth {
-    justify-content: center;
-    width: 100%;
   }
 
   .user-menu {
-    flex-direction: column;
-    gap: 8px;
     width: 100%;
-  }
-
-  .auth span {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .auth button {
-    width: 100%;
+    justify-content: center;
   }
 }
 </style>
