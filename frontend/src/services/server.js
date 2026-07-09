@@ -36,15 +36,43 @@ api.interceptors.request.use(
 
 
 
-api.interceptors.response.use((response) => {
-  console.log("------response interceptor------")
-  console.log("Status : ", response.status)
+api.interceptors.response.use(
+  (response) => {
+    console.log('------response interceptor------')
+    console.log('Status:', response.status)
 
+    return response
+  },
 
-  return response
-}, (error) => {
-  return Promise.reject(error)
-}
+  (error) => {
+    const status = error.response?.status
+
+    if (status === 401) {
+      console.log('Unauthorized - Login required')
+    }
+
+    else if (status === 403) {
+      console.log('Forbidden - Admin access required')
+    }
+
+    else if (status === 404) {
+      console.log('Resource not found')
+    }
+
+    else if (status === 409) {
+      console.log('Conflict - Data was already modified')
+    }
+
+    else if (status === 500) {
+      console.log('Internal server error')
+    }
+
+    else {
+      console.log('Network or unknown error')
+    }
+
+    return Promise.reject(error)
+  }
 )
 
 const apicall = {
