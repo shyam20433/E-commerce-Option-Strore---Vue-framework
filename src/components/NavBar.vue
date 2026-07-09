@@ -1,7 +1,16 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth";
-
+import router from "@/router";
 const auth = useAuthStore();
+
+
+function logout() {
+  auth.logout()
+  localStorage.removeItem('adminToken')
+  localStorage.removeItem('currentUser')
+
+  router.push('/productapi')
+}
 </script>
 
 <template>
@@ -42,9 +51,9 @@ const auth = useAuthStore();
       <div v-else class="user-menu">
         <span>Welcome {{ auth.currentUser.username }}</span>
 
-        <button @click="auth.logout()">
-          Logout
-        </button>
+        <button @click="logout">
+  Logout
+</button>
       </div>
     </div>
   </nav>

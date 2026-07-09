@@ -67,9 +67,20 @@ async function addproduct() {
     price: price.value,
     image: image.value,
   }
-  await apicall.addproduct(product)
-  toast.success(`added successfully !!`)
-  get()
+
+  try {
+    await apicall.addproduct(product)
+
+    toast.success('Added successfully !!')
+    get()
+  } catch (error) {
+    console.log('STATUS:', error.response?.status)
+    console.log('BACKEND ERROR:', error.response?.data)
+
+    toast.error(
+      error.response?.data?.message || 'Failed to add product'
+    )
+  }
 }
 
 function clearForm() {

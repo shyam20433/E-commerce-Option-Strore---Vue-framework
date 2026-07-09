@@ -8,6 +8,7 @@ const toast = useToast()
 
 const auth = useAuthStore()
 const name = ref('')
+const password = ref('')
 
 /*
 function addadmin(adminValue) {
@@ -54,23 +55,44 @@ async function addadmin() {
     return
   }
 
-  const user = await apicall.getUserByName(name.value)
+  try{
+    const data=await apicall.adminLogin({
+      username:name.value.trim(),
+      password:password.value
+    })
+    console.log('ORIGINAL TOKEN:', data.token.token)
 
-  if(user && user.role==='admin'){
- auth.login(user)
+  localStorage.setItem('adminToken',data.token.token)
+  localStorage.setItem('currentUser',JSON.stringify(data.user))
+  auth.login(data.user)
+  toast.success(`Admin logged in successfully`)
+}catch(error){
+  console.log('FULL ERROR:', error)
+  console.log('STATUS:', error.response?.status)
+  console.log('BACKEND RESPONSE:', error.response?.data)
+  toast.error((error.response?.data?.message ||"Admin login Failed"))
+}
 
-    toast.success('Admin Logged In')
-  } else {
-    toast.warning('Admin not found')
-  }
+
+
+
+
 }
 </script>
 
 <template>
   <div class="login-card">
-    <label for="username">enter your name</label>
-    <input id="username" type="text" v-model="name" placeholder="John Doe" required />
+    <label for="username" >enter your name</label>
 
+    <input id="username" type="text" v-model="name" placeholder="John Doe" required />
+<label for="password">Enter password</label>
+
+<input
+  id="password"
+  type="password"
+  v-model="password"
+  placeholder="Enter admin password"
+/>
     <label>select your role</label>
     <div class="button-group">
       <button class="btn-user" @click="adduser">user</button>

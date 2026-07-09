@@ -10,9 +10,15 @@ api.interceptors.request.use(
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser')
     )
-
+    const adminToken=localStorage.getItem('adminToken')
+    console.log("local token",adminToken)
     if (currentUser) {
       config.headers['user-id'] = currentUser.id
+    }
+
+    if(adminToken){
+
+      config.headers.Authorization=`${adminToken}`
     }
 
     console.log('------request interceptor------')
@@ -63,7 +69,7 @@ const apicall = {
     const data = await api.get(`/products/${id}`)
     return data.data
   },
-   
+
   async addproduct(product) {
     const data = await api.post('/products', product)
     productsCache=null
@@ -71,6 +77,12 @@ const apicall = {
   },
   async updateproduct(id, product) {
     const data = await api.put(`/products/${id}`, product)
+    productsCache=null
+    return data.data
+  },
+
+  async delproduct(id){
+    const data=await api.delete(`/products/${id}`)
     productsCache=null
     return data.data
   },
@@ -135,10 +147,15 @@ const apicall = {
   async getUserByName(username) {
     const res = await api.get(`/users?username=${username}`);
     return res.data;
-  }
+  },
 
 
 
+  //admin calling
+  async adminLogin(credentials) {
+  const response = await api.post('/admin/login', credentials)
+  return response.data
+}
 }
 
 export default apicall;
