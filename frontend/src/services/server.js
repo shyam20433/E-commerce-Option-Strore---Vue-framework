@@ -44,8 +44,18 @@ api.interceptors.response.use(
     return response
   },
 
-  (error) => {
+  async (error) => {
     const status = error.response?.status
+    const config=error.config
+
+    if (status===500 &&!config.retried){
+      config.retried=true
+      console.log(`server error -retrying once !`)
+      await new Promise((resolve) => {
+      setTimeout(resolve, 10000)
+    })
+      return api(config)
+    }
 
     if (status === 401) {
       console.log('Unauthorized - Login required')
