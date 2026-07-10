@@ -1,22 +1,17 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import User from 'App/Models/User'
+
 export default class Auth {
   public async handle(
-    { request, response }: HttpContextContract,
+    { auth, response }: HttpContextContract,
     next: () => Promise<void>
   ) {
-    const userId = request.header('user-id')
-    if (!userId) {
+    try {
+      await auth.use('api').authenticate()
+    } catch (error) {
+      console.log('AUTH ERROR:', error.message)
+
       return response.unauthorized({
-        message: 'Login required',
-      })
-    }
-    const user = await User.find(userId)
-
-
-    if (user?.role !== "admin") {
-      return response.forbidden({
-        message: 'Admin access required',
+        message: 'Invalid token',
       })
     }
 

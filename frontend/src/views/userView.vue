@@ -4,7 +4,26 @@ import apicall from '@/services/server'
 import { useToast } from 'vue-toastification'
 const toast=useToast()
 const users = ref([])
+const deleteDialog=ref(false)
+const selectedUserId=ref(null)
 
+function deleteModal(id){
+  selectedUserId.value=id
+  deleteDialog.value=true
+
+}
+
+async function confirmDelete() {
+  try{
+    await apicall.deleteUser(selectedUserId.value)
+    toast.success(`user deleted successfully !`)
+    selectedUserId.value=null
+    deleteDialog.value=false
+
+  }catch(error){
+    toast.error(error.response.data.message||`failed to delete !`)
+  }
+}
 async function fetch(){
   users.value=await apicall.getusers()
 }
@@ -13,18 +32,6 @@ onMounted(async () => {
   fetch()
 })
 
-
-async function delUser(id){
-try{
-  await apicall.deleteUser(id)
-  toast.success(`User removed successfully !!`)
-  fetch()
-
-
-}catch(error){
-  toast.error(error.response?.data?.message || 'Failed to delete User ')
-}
-}
 </script>
 
 <template>
@@ -54,8 +61,19 @@ try{
           <td>{{ user.phone }}</td>
           <td>{{ user.address }}</td>
           <td>
-            <button @click="delUser(user.id)">Delete</button>
+            <button @click="deleteModal(user.id)">Delete</button>
           </td>
+          
+          <v-dialog v-model="deleteDialog" max-width="450">
+                <v-card rounded="xl">
+                  <v-card-title>delete user </v-card-title>
+                  <v-card-text>are you sure Do you want to remove the users ?</v-card-text>
+                  <v-card-actions class="justify-center">
+                    <v-btn color="primary" variant="flat" @click="deleteDialog=false">No</v-btn>
+                    <v-btn color="secondary" variant="flat" @click="confirmDelete">yes</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
         </tr>
       </tbody>
     </v-table>

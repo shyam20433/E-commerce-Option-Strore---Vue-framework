@@ -91,6 +91,12 @@ async function updateStatus(order) {
 
         <p><strong>Order Date :</strong> {{ $formatDate(order.order_date) }}</p>
       </div>
+      <div>
+        <h2>Contact details</h2>
+        <h4>Phone Number :{{ order.user.phone }}</h4>
+        <h4>Address :{{ order.user.phone }}</h4>
+      </div>
+
     </div>
   </div>
 </template>

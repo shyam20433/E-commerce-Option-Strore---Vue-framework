@@ -10,9 +10,9 @@ Route.get('/', async () => {
 // Products
 Route.get('/products', 'ProductsController.index')
 Route.get('/products/:id', 'ProductsController.show')
-Route.post('/products', 'ProductsController.store').middleware(['admin','auth'])
-Route.put('/products/:id', 'ProductsController.update').middleware(['admin','auth'])
-Route.delete('/products/:id', 'ProductsController.destroy').middleware(['admin','auth'])
+Route.post('/products', 'ProductsController.store').middleware(['auth','admin'])
+Route.put('/products/:id', 'ProductsController.update').middleware(['auth','admin'])
+Route.delete('/products/:id', 'ProductsController.destroy').middleware(['auth','admin'])
 
 // Users
 Route.get('/users', 'UsersController.index')

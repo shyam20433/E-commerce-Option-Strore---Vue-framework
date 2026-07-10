@@ -58,10 +58,18 @@ import apicall from '@/services/server'
 const orderConfirmModal = ref(false)
 
 function askOrder() {
+  const user=auth.currentUser
+
+  if(!user.phone||!user.address){
+    toast.warning(`please complete your profile before placing order !!`)
+    router.push('/profile')
+    return
+  }
   if (cart.cartItems.length === 0) {
     toast.warning('Cart is empty, cannot place order!')
     return
   }
+
 
   orderConfirmModal.value = true
 }

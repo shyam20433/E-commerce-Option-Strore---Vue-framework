@@ -87,10 +87,7 @@ async function addadmin() {
   }
   const { valid } = await formRef.value.validate()
   if (!valid) { return }
-  if (!name.value.trim()) {
-    toast('Enter username')
-    return
-  }
+
 
   try {
     const data = await apicall.adminLogin({
@@ -101,6 +98,11 @@ async function addadmin() {
 
     localStorage.setItem('adminToken', data.token.token)
     localStorage.setItem('currentUser', JSON.stringify(data.user))
+
+    console.log(
+      'SAVED TOKEN:',
+      localStorage.getItem('adminToken')
+    )
     auth.login(data.user)
     toast.success(`Admin logged in successfully`)
     name.value = ''

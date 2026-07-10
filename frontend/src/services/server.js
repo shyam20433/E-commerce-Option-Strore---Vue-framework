@@ -10,16 +10,19 @@ api.interceptors.request.use(
     const currentUser = JSON.parse(
       localStorage.getItem('currentUser')
     )
-    const adminToken = localStorage.getItem('adminToken')
-    console.log("local token", adminToken)
+
+    
     if (currentUser) {
       config.headers['user-id'] = currentUser.id
     }
 
-    if (adminToken) {
+    const adminToken = localStorage.getItem('adminToken')
 
-      config.headers.Authorization = `${adminToken}`
-    }
+console.log('TOKEN:', adminToken)
+
+if (adminToken) {
+  config.headers.Authorization = `Bearer ${adminToken}`
+}
 
     console.log('------request interceptor------')
     console.log('method : ', config.method)

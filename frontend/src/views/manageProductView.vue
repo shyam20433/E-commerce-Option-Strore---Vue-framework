@@ -158,11 +158,23 @@ function editProduct(prod) {
 category.value = prod.category
 brand.value = prod.brand
 }
+
 async function deleteProduct(id) {
+  try{
   await apicall.delproduct(id)
   toast.success('Deleted Successfully')
   get()
-}
+}catch(error){
+ const status = error.response?.status
+
+    if (status === 401) {
+      toast.error('Session expired or invalid token. Please login again.')
+    } else if (status === 403) {
+      toast.error('Admin access required')
+    } else {
+      toast.error('Failed to delete product')
+  }
+}}
 
 async function get() {
   loading.value = true
