@@ -9,7 +9,7 @@ export default class ProductsController {
       message: 'Testing retry',
     }) */
 //note this is just for learning how the retry works so to test this just uncomment the above and comment the below and after the console info undo to see
-//and boom its working firely 
+//and boom its working firely
     const search = request.input('search')
 
     const query = Product.query()

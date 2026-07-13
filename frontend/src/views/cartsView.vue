@@ -46,21 +46,12 @@ const filteredProducts = computed(() => {
 })
 
 import apicall from '@/services/server'
-
-
-
-
-
-
-
-
-
 const orderConfirmModal = ref(false)
 
 function askOrder() {
-  const user=auth.currentUser
+  const user = auth.currentUser
 
-  if(!user.phone||!user.address){
+  if (!user.phone || !user.address) {
     toast.warning(`please complete your profile before placing order !!`)
     router.push('/profile')
     return
@@ -161,7 +152,7 @@ function cancelDelete() {
           </tr>
           <tr>
             <th>Product Price per unit</th>
-            <td class="price">{{ $formatPrice(prod.price )}}</td>
+            <td class="price">{{ $formatPrice(prod.price) }}</td>
           </tr>
           <tr>
             <th>Product quantity</th>
@@ -199,7 +190,7 @@ function cancelDelete() {
           </tr>
         </table>
       </div>
-      <h3>total amount :  {{ $formatPrice(cart.totalprice) }}</h3>
+      <h3>total amount : {{ $formatPrice(cart.totalprice) }}</h3>
       <h3>total quantity : {{ cart.totalitems }}</h3>
       <button @click="askOrder" v-if="cart.cartItems.length >= 1">
         Place Order

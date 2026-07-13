@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/auth'
 import { ref } from 'vue'
 import apicall from '@/services/server'
 import { useToast } from 'vue-toastification'
-
+import router from '@/router'
 const toast = useToast()
 
 const auth = useAuthStore()
@@ -42,7 +42,7 @@ function adduser(userValue) {
 } */
 
 async function adduser() {
-  if(!formRef.value){
+  if (!formRef.value) {
     toast.error(`Form not found !`)
     return
   }
@@ -62,6 +62,7 @@ async function adduser() {
       name.value = ''
       password.value = ''
       formRef.value.resetValidation()
+
     } else {
       const newUser = {
         username: name.value.trim(),
@@ -74,6 +75,7 @@ async function adduser() {
       password.value = ''
       formRef.value.resetValidation()
     }
+    return router.push('/productapi')
   }
   catch (error) {
     toast.error(`Something went Wrong`)
@@ -81,7 +83,7 @@ async function adduser() {
   }
 }
 async function addadmin() {
-   if (!formRef.value) {
+  if (!formRef.value) {
     toast.error('Form not found')
     return
   }
@@ -131,27 +133,27 @@ async function addadmin() {
 
       <v-form ref="formRef">
 
-      <v-text-field v-model="name" label="Username" placeholder="Enter your name" variant="outlined"
-        :rules="[rules.username]" validate-on="blur" prepend-inner-icon="mdi-account" class="mb-2" />
+        <v-text-field v-model="name" label="Username" placeholder="Enter your name" variant="outlined"
+          :rules="[rules.username]" validate-on="blur" prepend-inner-icon="mdi-account" class="mb-2" />
 
 
-      <v-text-field v-model="password" label="Password" placeholder="Enter admin password" variant="outlined"
-        :rules="[rules.password]" validate-on="blur" type="password" prepend-inner-icon="mdi-lock" class="mb-4" />
+        <v-text-field v-model="password" label="Password" placeholder="Enter admin password" variant="outlined"
+          :rules="[rules.password]" validate-on="blur" type="password" prepend-inner-icon="mdi-lock" class="mb-4" />
 
 
-      <v-label class="text-subtitle-2 font-weight-medium mb-2 d-block">
-        Select  role
-      </v-label>
+        <v-label class="text-subtitle-2 font-weight-medium mb-2 d-block">
+          Select role
+        </v-label>
 
-      <div class="d-flex ga-3">
-        <v-btn color="success" variant="flat"  @click="adduser" size="large">
-          User
-        </v-btn>
+        <div class="d-flex ga-3">
+          <v-btn color="success" variant="flat" @click="adduser" size="large">
+            User
+          </v-btn>
 
-        <v-btn color="error" variant="flat"  @click="addadmin" size="large">
-          Admin
-        </v-btn>
-      </div>
+          <v-btn color="error" variant="flat" @click="addadmin" size="large">
+            Admin
+          </v-btn>
+        </div>
       </v-form>
     </v-card>
   </v-container>

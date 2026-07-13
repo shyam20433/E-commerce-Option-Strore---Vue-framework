@@ -33,8 +33,8 @@ const search = ref('')
 let timer
 const loading = ref(false)
 
-const page=ref(1)
-const itemsPerPage=ref(4)
+const page = ref(1)
+const itemsPerPage = ref(4)
 /* async function searchProduct(keyword) {
   if (keyword.trim() === '') {
     await get()
@@ -163,8 +163,8 @@ const paginatedProducts = computed(() => {
   return sortedproducts.value.slice(start, end)
 })
 
-watch([search,sortby],()=>{
-  page.value=1
+watch([search, sortby], () => {
+  page.value = 1
 })
 
 async function fetchid() {
@@ -189,7 +189,7 @@ function addtocart(prod) {
 
       setTimeout(() => {
         throttledProducts.delete(prod.id)
-      }, 700)
+      }, 4000)
     }
   }
 }
@@ -295,46 +295,37 @@ const sortOptions = [
     <div v-if="loading" class="d-flex justify-center my-10">
       <v-progress-circular indeterminate size="60" width="6" /><!-- :model-value="progress" -->
     </div>
-<v-row v-else>
-  <v-col
-    v-for="prod in paginatedProducts"
-    :key="prod.id"
-    cols="12"
-    sm="6"
-    md="4"
-    lg="3"
-  >
-    <productCard :prod="prod">
+    <v-row v-else>
+      <v-col v-for="prod in paginatedProducts" :key="prod.id" cols="12" sm="6" md="4" lg="3">
+        <productCard :prod="prod">
 
-      <template #button>
-        <v-btn
-          v-if="auth.isLoggedIn && !auth.isAdmin"
-          color="primary"
-          block
-          @click="addtocart(prod)"
-        >
-          Add To Cart
-        </v-btn>
+          <template #button>
+            <v-btn v-if="auth.isLoggedIn && !auth.isAdmin" color="primary" block @click="addtocart(prod)">
+              Add To Cart
+            </v-btn>
 
-        <apiAdminControlBtn
-          v-if="auth.isAdmin"
-          @edit="editProduct(prod)"
-          @delete="deleteProduct(prod.id)"
-        />
-      </template>
+            <apiAdminControlBtn v-if="auth.isAdmin" @edit="editProduct(prod)" @delete="deleteProduct(prod.id)" />
+          </template>
 
-    </productCard>
-  </v-col>
-</v-row>
-<div v-if="sortedproducts.length > itemsPerPage" class="d-flex justify-center mt-8">
-      <v-pagination
-        v-model="page"
-        :length="Math.ceil(sortedproducts.length / itemsPerPage)"
-        :total-visible="5"
-        color="primary"
-        rounded="circle"
-      ></v-pagination>
+        </productCard>
+      </v-col>
+    </v-row>
+    <div v-if="sortedproducts.length > itemsPerPage" class="d-flex justify-center mt-8">
+      <v-pagination v-model="page" :length="Math.ceil(sortedproducts.length / itemsPerPage)" :total-visible="5"
+        color="primary" rounded="circle"></v-pagination>
     </div>
+    <v-empty-state
+  v-if="!loading && sortedproducts.length === 0"
+  icon="mdi-magnify"
+  title="No products found"
+  text="We couldn't find anything matching your search criteria. Try checking your spelling or clearing the filters."
+>
+  <template #actions>
+    <v-btn color="primary" variant="outlined" @click="search = ''; clearForm();">
+      Clear Search
+    </v-btn>
+  </template>
+</v-empty-state>
   </v-container>
 </template>
 <!--
@@ -677,4 +668,3 @@ td {
 }
 </style>
  -->
-

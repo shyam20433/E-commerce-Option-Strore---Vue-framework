@@ -11,7 +11,7 @@ import backBtn from '@/components/backBtn.vue'
 
 const myorders = ref([])
 
-function back(){
+function back() {
   return router.push('/productapi')
 }
 async function getmyorders() {
@@ -26,18 +26,12 @@ onMounted(() => {
 
 </script>
 <template>
-  <backBtn @back="back"/>
+  <backBtn @back="back" />
   <v-container class="py-8">
     <h1 class="text-h4 font-weight-bold text-center mb-8">My Orders</h1>
 
 
-    <v-alert
-      v-if="myorders.length === 0"
-      type="info"
-      variant="tonal"
-      class="mx-auto"
-      max-width="600"
-    >
+    <v-alert v-if="myorders.length === 0" type="info" variant="tonal" class="mx-auto" max-width="600">
       You have no orders
     </v-alert>
 
@@ -46,7 +40,7 @@ onMounted(() => {
       <v-card-title class="d-flex justify-space-between align-center">
         <span class="font-weight-bold"> Order #{{ order.id }} </span>
 
-        <v-chip color="success" variant="tonal"> {{order.status}} </v-chip>
+        <v-chip color="success" variant="tonal"> {{ order.status }} </v-chip>
       </v-card-title>
 
       <v-card-subtitle class="pb-4">
@@ -59,13 +53,7 @@ onMounted(() => {
         <v-row>
           <v-col v-for="item in order.items" :key="item.id" cols="12" sm="6" md="4">
             <v-card variant="outlined" rounded="lg" height="100%">
-              <v-img
-                :src="item.image"
-                :alt="item.name"
-                height="180"
-                contain
-                class="bg-grey-lighten-4"
-              />
+              <v-img :src="item.image" :alt="item.name" height="180" contain class="bg-grey-lighten-4" />
 
               <v-card-title class="text-h6">
                 {{ item.name }}

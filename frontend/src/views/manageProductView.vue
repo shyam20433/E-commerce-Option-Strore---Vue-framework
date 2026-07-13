@@ -68,9 +68,9 @@ watch(search, (newvalue) => {
 })
 
 async function addproduct() {
-  if(!formRef.value){return}
-  const {valid}=await formRef.value.validate()
-  if(!valid){
+  if (!formRef.value) { return }
+  const { valid } = await formRef.value.validate()
+  if (!valid) {
     toast.error(`please enter require fields correctly !`)
     return
   }
@@ -79,8 +79,8 @@ async function addproduct() {
     price: price.value,
     image: image.value,
     description: description.value,
-  category: category.value,
-  brand: brand.value,
+    category: category.value,
+    brand: brand.value,
   }
 
   try {
@@ -107,7 +107,7 @@ function clearForm() {
   category.value = ''
   brand.value = ''
   version.value = null
-  if(formRef.value){
+  if (formRef.value) {
     formRef.value.resetValidation()
   }
 
@@ -115,7 +115,7 @@ function clearForm() {
 }
 const version = ref(null)
 async function updateproduct() {
-if (!formRef.value) return
+  if (!formRef.value) return
 
   const { valid } = await formRef.value.validate()
 
@@ -124,14 +124,14 @@ if (!formRef.value) return
     return
   }
   const product = {
-  version: version.value,
-  name: name.value,
-  price: price.value,
-  image: image.value,
-  description: description.value,
-  category: category.value,
-  brand: brand.value,
-}
+    version: version.value,
+    name: name.value,
+    price: price.value,
+    image: image.value,
+    description: description.value,
+    category: category.value,
+    brand: brand.value,
+  }
   try {
     await apicall.updateproduct(id.value, product)
     toast.success(`updated successfully!`)
@@ -155,17 +155,17 @@ function editProduct(prod) {
   price.value = prod.price
   image.value = prod.image
   description.value = prod.description
-category.value = prod.category
-brand.value = prod.brand
+  category.value = prod.category
+  brand.value = prod.brand
 }
 
 async function deleteProduct(id) {
-  try{
-  await apicall.delproduct(id)
-  toast.success('Deleted Successfully')
-  get()
-}catch(error){
- const status = error.response?.status
+  try {
+    await apicall.delproduct(id)
+    toast.success('Deleted Successfully')
+    get()
+  } catch (error) {
+    const status = error.response?.status
 
     if (status === 401) {
       toast.error('Session expired or invalid token. Please login again.')
@@ -173,8 +173,9 @@ async function deleteProduct(id) {
       toast.error('Admin access required')
     } else {
       toast.error('Failed to delete product')
+    }
   }
-}}
+}
 
 async function get() {
   loading.value = true
@@ -279,90 +280,82 @@ const rules = {
     <h1 class="text-h4 text-center mb-6">Product Management</h1>
     <v-form ref="formRef">
 
-    <v-card class="pa-6 mb-8" elevation="3">
-      <v-row>
-        <!-- PRODUCT ID -->
+      <v-card class="pa-6 mb-8" elevation="3">
+        <v-row>
+          <!-- PRODUCT ID -->
 
-        <v-col cols="12" sm="6" md="3">
-          <v-text-field v-model="id" label="Product ID" type="number" variant="outlined" hide-details validate-on="blur" />
-        </v-col>
-        <v-col cols="12" sm="6" md="3">
-          <v-text-field v-model="search" label="search" prepend-inner-icon="mdi-magnify" variant="outlined" clearable  validate-on="blur" />
+          <v-col cols="12" sm="6" md="3">
+            <v-text-field v-model="id" label="Product ID" type="number" variant="outlined" hide-details
+              validate-on="blur" />
+          </v-col>
+          <v-col cols="12" sm="6" md="3">
+            <v-text-field v-model="search" label="search" prepend-inner-icon="mdi-magnify" variant="outlined" clearable
+              validate-on="blur" />
 
-        </v-col>
+          </v-col>
 
-        <!-- <v-col cols="12" sm="6" md="3">
+          <!-- <v-col cols="12" sm="6" md="3">
           <SearchBar @search="searchProduct" />
         </v-col> -->
-        <v-col cols="12" sm="6" md="3">
-          <v-select v-model="sortby" label="sort by price" :items="sortOptions" variant="outlined" validate-on="blur"
-            hide-details></v-select>
-        </v-col>
+          <v-col cols="12" sm="6" md="3">
+            <v-select v-model="sortby" label="sort by price" :items="sortOptions" variant="outlined" validate-on="blur"
+              hide-details></v-select>
+          </v-col>
 
-        <!-- PRODUCT NAME -->
+          <!-- PRODUCT NAME -->
 
-        <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
-          <v-text-field v-model="name" label="Product Name" variant="outlined"   :rules="[rules.productName]" validate-on="blur" />
-        </v-col>
+          <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
+            <v-text-field v-model="name" label="Product Name" variant="outlined" :rules="[rules.productName]"
+              validate-on="blur" />
+          </v-col>
 
-        <!-- PRODUCT PRICE -->
+          <!-- PRODUCT PRICE -->
 
-        <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
-          <v-text-field v-model="price" label="Product Price" type="number" prefix="₹" variant="outlined" :rules="[rules.productPrice]" validate-on="blur"
-            hide-details />
-        </v-col>
+          <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
+            <v-text-field v-model="price" label="Product Price" type="number" prefix="₹" variant="outlined"
+              :rules="[rules.productPrice]" validate-on="blur" hide-details />
+          </v-col>
 
-        <!-- IMAGE URL -->
+          <!-- IMAGE URL -->
 
-        <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
-          <v-text-field v-model="image" label="Image URL" variant="outlined" :rules="[rules.productImage]" validate-on="blur" />
-        </v-col>
-        <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
-  <v-text-field
-    v-model="description"
-    label="Description"
-    variant="outlined"
-    :rules="[rules.productDescription]" validate-on="blur"
-  />
-</v-col>
+          <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
+            <v-text-field v-model="image" label="Image URL" variant="outlined" :rules="[rules.productImage]"
+              validate-on="blur" />
+          </v-col>
+          <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
+            <v-text-field v-model="description" label="Description" variant="outlined"
+              :rules="[rules.productDescription]" validate-on="blur" />
+          </v-col>
 
-<v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
-  <v-text-field
-    v-model="category"
-    label="Category"
-    variant="outlined"
-    :rules="[rules.productCategory]" validate-on="blur"
-  />
-</v-col>
+          <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
+            <v-text-field v-model="category" label="Category" variant="outlined" :rules="[rules.productCategory]"
+              validate-on="blur" />
+          </v-col>
 
-<v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
-  <v-text-field
-    v-model="brand"
-    label="Brand"
-    variant="outlined"
-   :rules="[rules.productBrand]" validate-on="blur"
-  />
-</v-col>
-      </v-row>
+          <v-col v-if="auth.isAdmin" cols="12" sm="6" md="3">
+            <v-text-field v-model="brand" label="Brand" variant="outlined" :rules="[rules.productBrand]"
+              validate-on="blur" />
+          </v-col>
+        </v-row>
 
 
-      <div class="d-flex justify-center flex-wrap ga-3 mt-6">
-        <v-btn v-if="auth.isAdmin" color="success" variant="flat" @click="addproduct"> Add </v-btn>
+        <div class="d-flex justify-center flex-wrap ga-3 mt-6">
+          <v-btn v-if="auth.isAdmin" color="success" variant="flat" @click="addproduct"> Add </v-btn>
 
-        <!-- <v-btn v-if="auth.isAdmin" color="success" variant="flat" @click="get"> get </v-btn> -->
+          <!-- <v-btn v-if="auth.isAdmin" color="success" variant="flat" @click="get"> get </v-btn> -->
 
-        <v-btn color="primary" variant="flat" @click="fetchid"> Get </v-btn>
+          <v-btn color="primary" variant="flat" @click="fetchid"> Get </v-btn>
 
-        <v-btn v-if="auth.isAdmin" color="error" variant="flat" @click="delproduct"> Delete </v-btn>
+          <v-btn v-if="auth.isAdmin" color="error" variant="flat" @click="delproduct"> Delete </v-btn>
 
-        <v-btn v-if="auth.isAdmin" color="warning" variant="flat" @click="updateproduct">
-          Update
-        </v-btn>
+          <v-btn v-if="auth.isAdmin" color="warning" variant="flat" @click="updateproduct">
+            Update
+          </v-btn>
 
-        <v-btn color="secondary" variant="outlined" @click="clearForm"> Clear </v-btn>
-      </div>
-    </v-card>
-</v-form>
+          <v-btn color="secondary" variant="outlined" @click="clearForm"> Clear </v-btn>
+        </div>
+      </v-card>
+    </v-form>
     <!--  //selected product -->
 
     <v-card v-if="auth.isLoggedIn && product.length !== 0" class="pa-5 mb-8 mx-auto" max-width="500" elevation="4">
@@ -394,37 +387,33 @@ const rules = {
     <div v-if="loading" class="d-flex justify-center my-10">
       <v-progress-circular indeterminate size="60" width="6" /><!-- :model-value="progress" -->
     </div>
-<v-row v-else>
-  <v-col
-    v-for="prod in sortedproducts"
-    :key="prod.id"
-    cols="12"
-    sm="6"
-    md="4"
-    lg="3"
-  >
-    <productCard :prod="prod">
+    <v-row v-else>
+      <v-col v-for="prod in sortedproducts" :key="prod.id" cols="12" sm="6" md="4" lg="3">
+        <productCard :prod="prod">
 
-      <template #button>
-        <v-btn
-          v-if="auth.isLoggedIn && !auth.isAdmin"
-          color="primary"
-          block
-          @click="addtocart(prod)"
-        >
-          Add To Cart
-        </v-btn>
+          <template #button>
+            <v-btn v-if="auth.isLoggedIn && !auth.isAdmin" color="primary" block @click="addtocart(prod)">
+              Add To Cart
+            </v-btn>
 
-        <apiAdminControlBtn
-          v-if="auth.isAdmin"
-          @edit="editProduct(prod)"
-          @delete="deleteProduct(prod.id)"
-        />
-      </template>
+            <apiAdminControlBtn v-if="auth.isAdmin" @edit="editProduct(prod)" @delete="deleteProduct(prod.id)" />
+          </template>
 
-    </productCard>
-  </v-col>
-</v-row>
+        </productCard>
+      </v-col>
+    </v-row>
+     <v-empty-state
+  v-if="!loading && sortedproducts.length === 0"
+  icon="mdi-magnify"
+  title="No products found"
+  text="We couldn't find anything matching your search criteria. Try checking your spelling or clearing the filters."
+>
+  <template #actions>
+    <v-btn color="primary" variant="outlined" @click="search = ''; clearForm();">
+      Clear Search
+    </v-btn>
+  </template>
+</v-empty-state>
   </v-container>
 </template>
 <!--
@@ -767,4 +756,3 @@ td {
 }
 </style>
  -->
-

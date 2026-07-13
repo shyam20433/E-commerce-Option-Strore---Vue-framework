@@ -44,26 +44,13 @@ async function updateProfile() {
 
     <v-card class="pa-6">
 
-      <v-text-field
-        v-model="username"
-        label="Username"
-      />
+      <v-text-field v-model="username" label="Username" />
 
-      <v-text-field
-        v-model="phone"
-        label="Phone Number"
-      />
+      <v-text-field v-model="phone" label="Phone Number" />
 
-      <v-textarea
-        v-model="address"
-        label="Address"
-      />
+      <v-textarea v-model="address" label="Address" />
 
-      <v-btn
-        color="primary"
-        block
-        @click="updateProfile"
-      >
+      <v-btn color="primary" block @click="updateProfile">
         Update Profile
       </v-btn>
 
