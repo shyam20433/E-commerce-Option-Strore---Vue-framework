@@ -71,7 +71,7 @@ async function addproduct() {
   if (!formRef.value) { return }
   const { valid } = await formRef.value.validate()
   if (!valid) {
-    toast.error(`please enter require fields correctly !`)
+    toast.error('Please fill in all required fields correctly.')
     return
   }
   const product = {
@@ -86,7 +86,7 @@ async function addproduct() {
   try {
     await apicall.addproduct(product)
 
-    toast.success('Added successfully !!')
+    toast.success('Product added successfully!')
     get()
   } catch (error) {
     console.log('STATUS:', error.response?.status)
@@ -120,7 +120,7 @@ async function updateproduct() {
   const { valid } = await formRef.value.validate()
 
   if (!valid) {
-    toast.error('Please fill all required fields correctly')
+    toast.error('Please fill in all required fields correctly.')
     return
   }
   const product = {
@@ -134,12 +134,12 @@ async function updateproduct() {
   }
   try {
     await apicall.updateproduct(id.value, product)
-    toast.success(`updated successfully!`)
+    toast.success('Product updated successfully!')
     get()
     return
   } catch (error) {
     if (error.response.status === 409) {
-      toast.warning("this product is updating by other admin !!!")
+      toast.warning('This product is being updated by another admin.')
     }
     await get()
     return
@@ -162,7 +162,7 @@ function editProduct(prod) {
 async function deleteProduct(id) {
   try {
     await apicall.delproduct(id)
-    toast.success('Deleted Successfully')
+    toast.success('Product deleted successfully!')
     get()
   } catch (error) {
     const status = error.response?.status
@@ -210,13 +210,13 @@ async function fetchid() {
 }
 async function delproduct() {
   await apicall.delproduct(id.value)
-  toast.success(`deleted !!`)
+  toast.success('Product deleted successfully!')
   get()
 }
 const throttledProducts = new Set()
 function addtocart(prod) {
   if (!auth.isLoggedIn) {
-    toast.warning(`login to add carts !!`)
+    toast.warning('Please log in to add items to the cart!')
     return
   } else {
     if (throttledProducts.has(prod.id)) {

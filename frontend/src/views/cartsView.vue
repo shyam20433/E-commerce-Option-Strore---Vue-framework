@@ -52,12 +52,12 @@ function askOrder() {
   const user = auth.currentUser
 
   if (!user.phone || !user.address) {
-    toast.warning(`please complete your profile before placing order !!`)
+    toast.warning('Please complete your profile before placing an order!')
     router.push('/profile')
     return
   }
   if (cart.cartItems.length === 0) {
-    toast.warning('Cart is empty, cannot place order!')
+    toast.warning('Cart is empty, cannot place an order!')
     return
   }
 
@@ -178,11 +178,11 @@ function cancelDelete() {
 
               <v-dialog v-model="deleteModal" max-width="450">
                 <v-card rounded="xl">
-                  <v-card-title>remove Product</v-card-title>
-                  <v-card-text>are you sure Do you want to remove the product</v-card-text>
+                  <v-card-title>Remove Product</v-card-title>
+                  <v-card-text>Are you sure you want to remove this product?</v-card-text>
                   <v-card-actions class="justify-center">
                     <v-btn color="primary" variant="flat" @click="cancelDelete">No</v-btn>
-                    <v-btn color="secondary" variant="flat" @click="confirmDelete">yes</v-btn>
+                    <v-btn color="secondary" variant="flat" @click="confirmDelete">Yes</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -199,9 +199,9 @@ function cancelDelete() {
 
       <v-dialog v-model="orderConfirmModal" max-width="450">
         <v-card rounded="xl">
-          <v-card-title class="text-center"> Order place</v-card-title>
-          <v-card-text class="text-center">Do you want to place order</v-card-text>
-          <v-card-actions>
+          <v-card-title class="text-center">Place Order</v-card-title>
+          <v-card-text class="text-center">Are you sure you want to place this order?</v-card-text>
+          <v-card-actions class="justify-center">
             <v-btn color="jothisri" variant="flat" @click="confirmOrder">Yes</v-btn>
             <v-btn color="red" variant="flat" @click="cancelOrder">No</v-btn>
           </v-card-actions>

@@ -87,7 +87,7 @@ router.beforeEach(async (to) => {
 
   if (to.path === "/carts" && cart.cartItems.length === 0) {
 
-    toast.warning("Please add a items to the cart first!")
+    toast.warning("Please add items to the cart first!")
 
     return { path: "/productapi" }
   }
@@ -95,7 +95,7 @@ router.beforeEach(async (to) => {
   const auth = useAuthStore()
   if ((to.path === '/manage' || to.path === '/orders' || to.path === '/users') && !auth.isAdmin) {
     console.log(`manage checking`)
-    toast.warning(`you arent admin !!!`)
+    toast.warning("You are not an admin!")
     return { path: "/" }
   }
 
@@ -108,7 +108,7 @@ router.beforeEach(async (to) => {
     const orders = await apicall.getOrders()
     const myOrders = orders.filter(order => order.user?.id === auth.currentUser.id)
     if (myOrders.length === 0) {
-      toast.warning("No orders have made so far ")
+      toast.warning("No orders have been made so far")
       return { path: "/productapi" }
     }
   }

@@ -43,7 +43,7 @@ function adduser(userValue) {
 
 async function adduser() {
   if (!formRef.value) {
-    toast.error(`Form not found !`)
+    toast.error('Form not found!')
     return
   }
   const { valid } = await formRef.value.validate()
@@ -58,7 +58,7 @@ async function adduser() {
     if (existingUser) {
       auth.login(existingUser)
 
-      toast.success('Logged in successfully')
+      toast.success('Logged in successfully!')
       name.value = ''
       password.value = ''
       formRef.value.resetValidation()
@@ -70,7 +70,7 @@ async function adduser() {
       }
       const createdUser = await apicall.adduser(newUser)
       auth.login(createdUser)
-      toast.success('Signup Successfully')
+      toast.success('Signed up successfully!')
       name.value = ''
       password.value = ''
       formRef.value.resetValidation()
@@ -78,13 +78,13 @@ async function adduser() {
     return router.push('/productapi')
   }
   catch (error) {
-    toast.error(`Something went Wrong`)
+    toast.error('Something went wrong.')
     console.log(error)
   }
 }
 async function addadmin() {
   if (!formRef.value) {
-    toast.error('Form not found')
+    toast.error('Form not found!')
     return
   }
   const { valid } = await formRef.value.validate()
@@ -106,7 +106,7 @@ async function addadmin() {
       localStorage.getItem('adminToken')
     )
     auth.login(data.user)
-    toast.success(`Admin logged in successfully`)
+    toast.success('Admin logged in successfully!')
     name.value = ''
     password.value = ''
     formRef.value.resetValidation()
@@ -114,7 +114,7 @@ async function addadmin() {
     console.log('FULL ERROR:', error)
     console.log('STATUS:', error.response?.status)
     console.log('BACKEND RESPONSE:', error.response?.data)
-    toast.error((error.response?.data?.message || "Admin login Failed"))
+    toast.error(error.response?.data?.message || 'Admin login failed.')
   }
 
 

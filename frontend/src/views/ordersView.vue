@@ -79,11 +79,11 @@ async function updateStatus(order) {
       <adminOrdersBtn @click="confirmOrder(order.id)" />
       <v-dialog v-model="deleteDialog" max-width="450">
         <v-card rounded="xl">
-          <v-card-title>delete Order </v-card-title>
-          <v-card-text>are you sure Do you want to remove this Order ?</v-card-text>
+          <v-card-title>Delete Order</v-card-title>
+          <v-card-text>Are you sure you want to remove this order?</v-card-text>
           <v-card-actions class="justify-center">
             <v-btn color="primary" variant="flat" @click="deleteDialog = false">No</v-btn>
-            <v-btn color="secondary" variant="flat" @click="confirmDelete">yes</v-btn>
+            <v-btn color="secondary" variant="flat" @click="confirmDelete">Yes</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>

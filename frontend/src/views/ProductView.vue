@@ -35,7 +35,7 @@ const auth = useAuthStore()
 
 function addtocart(prod) {
   if (!auth.isLoggedIn) {
-    toast.warning(`login to add carts !!`)
+    toast.warning('Please log in to add items to the cart!')
   } else {
     cart.addtocart(prod)
   }
@@ -43,7 +43,7 @@ function addtocart(prod) {
 
 function viewcart() {
   if (!auth.isLoggedIn) {
-    toast.info(`login to view/add carts`)
+    toast.info('Please log in to view or add items to the cart.')
   } else {
     router.push('/carts')
   }
