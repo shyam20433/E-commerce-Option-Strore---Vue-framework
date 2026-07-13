@@ -16,23 +16,23 @@ onMounted(() => {
 })
 
 
-const deleteDialog=ref(false)
-const deleteorderId=ref(null)
+const deleteDialog = ref(false)
+const deleteorderId = ref(null)
 
-function cancelDelete(){
-  deleteDialog.value=false
-  deleteorderId.value=null
+function cancelDelete() {
+  deleteDialog.value = false
+  deleteorderId.value = null
 
 }
 
-function confirmOrder(id){
-  deleteDialog.value=true
-  deleteorderId.value=id
-  confirmDelete()
+function confirmOrder(id) {
+  deleteDialog.value = true
+  deleteorderId.value = id
+
 }
 
 
-async function confirmDelete(){
+async function confirmDelete() {
   await deleteOrder(deleteorderId.value)
   cancelDelete()
 }
@@ -76,33 +76,26 @@ async function updateStatus(order) {
     <div class="order-card" v-for="order in orders" :key="order.id">
       <h2>Order :{{ order.id }}</h2>
       <h2>username :{{ order.user.username }}</h2>
-      <adminOrdersBtn @click="deleteDialog=true" @shipped="shipped(order.id)" />
+      <adminOrdersBtn @click="confirmOrder(order.id)" />
       <v-dialog v-model="deleteDialog" max-width="450">
-                <v-card rounded="xl">
-                  <v-card-title>delete Order </v-card-title>
-                  <v-card-text>are you sure Do you want to remove this Order ?</v-card-text>
-                  <v-card-actions class="justify-center">
-                    <v-btn color="primary" variant="flat" @click="deleteDialog=false">No</v-btn>
-                    <v-btn color="secondary" variant="flat" @click="confirmOrder(order.id)">yes</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-      <v-select
-  v-model="order.status"
-  :items="[
-    'Shipped',
-    'Out for Delivery',
-    'Delivered'
-  ]"
-  label="Order Status"
-/>
+        <v-card rounded="xl">
+          <v-card-title>delete Order </v-card-title>
+          <v-card-text>are you sure Do you want to remove this Order ?</v-card-text>
+          <v-card-actions class="justify-center">
+            <v-btn color="primary" variant="flat" @click="deleteDialog = false">No</v-btn>
+            <v-btn color="secondary" variant="flat" @click="confirmDelete">yes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-select v-model="order.status" :items="[
+        'Shipped',
+        'Out for Delivery',
+        'Delivered'
+      ]" label="Order Status" />
 
-<v-btn
-  color="primary"
-  @click="updateStatus(order)"
->
-  Update Status
-</v-btn>
+      <v-btn color="primary" @click="updateStatus(order)">
+        Update Status
+      </v-btn>
 
       <div class="product-card" v-for="suborder in order.items" :key="suborder.id">
         <img :src="suborder.image" :alt="suborder.name" class="product-image" />

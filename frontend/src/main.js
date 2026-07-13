@@ -10,7 +10,6 @@ import 'vue-toastification/dist/index.css'
 import dateformatter from './plugins/DateFormatter'
 import priceFormatter from './plugins/PriceFormatter'
 import vuetify from './plugins/VuetifyCustomBtn'
-import { createRulesPlugin } from 'vuetify/labs/rules'
 
 
 import App from './App.vue'

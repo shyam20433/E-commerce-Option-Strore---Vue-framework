@@ -33,7 +33,8 @@ const search = ref('')
 let timer
 const loading = ref(false)
 
-
+const page=ref(1)
+const itemsPerPage=ref(4)
 /* async function searchProduct(keyword) {
   if (keyword.trim() === '') {
     await get()
@@ -156,6 +157,16 @@ const sortedproducts = computed(() => {
   })
 })
  */
+const paginatedProducts = computed(() => {
+  const start = (page.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return sortedproducts.value.slice(start, end)
+})
+
+watch([search,sortby],()=>{
+  page.value=1
+})
+
 async function fetchid() {
   product.value = await apicall.getproduct(id.value)
 }
@@ -286,7 +297,7 @@ const sortOptions = [
     </div>
 <v-row v-else>
   <v-col
-    v-for="prod in sortedproducts"
+    v-for="prod in paginatedProducts"
     :key="prod.id"
     cols="12"
     sm="6"
@@ -315,6 +326,15 @@ const sortOptions = [
     </productCard>
   </v-col>
 </v-row>
+<div v-if="sortedproducts.length > itemsPerPage" class="d-flex justify-center mt-8">
+      <v-pagination
+        v-model="page"
+        :length="Math.ceil(sortedproducts.length / itemsPerPage)"
+        :total-visible="5"
+        color="primary"
+        rounded="circle"
+      ></v-pagination>
+    </div>
   </v-container>
 </template>
 <!--
