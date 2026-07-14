@@ -1,0 +1,59 @@
+import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+
+export default class UpdateProductValidator {
+  constructor(protected ctx: HttpContextContract) {}
+
+  /*
+   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
+   *
+   * For example:
+   * 1. The username must be of data type string. But then also, it should
+   *    not contain special characters or numbers.
+   *    ```
+   *     schema.string({}, [ rules.alpha() ])
+   *    ```
+   *
+   * 2. The email must be of data type string, formatted as a valid
+   *    email. But also, not used by any other user.
+   *    ```
+   *     schema.string({}, [
+   *       rules.email(),
+   *       rules.unique({ table: 'users', column: 'email' }),
+   *     ])
+   *    ```
+   */
+  public schema = schema.create({
+    version: schema.number([
+      rules.unsigned() // Required to handle your admin concurrency check
+    ]),
+    name: schema.string.optional([
+      rules.trim(),
+      rules.maxLength(255)
+    ]),
+    price: schema.number.optional([
+      rules.unsigned()
+    ]),
+    image: schema.string.optional([
+      rules.trim(),
+      rules.url()
+    ])
+  })
+
+  /**
+   * Custom messages for validation failures. You can make use of dot notation `(.)`
+   * for targeting nested fields and array expressions `(*)` for targeting all
+   * children of an array. For example:
+   *
+   * {
+   *   'profile.username.required': 'Username is required',
+   *   'scores.*.number': 'Define scores as valid numbers'
+   * }
+   *
+   */
+  public messages: CustomMessages = {
+    'version.required': 'Product version is missing.',
+    'price.unsigned': 'Price cannot be a negative value.',
+    'image.url': 'Please provide a valid URL link for the image.'
+  }
+}
